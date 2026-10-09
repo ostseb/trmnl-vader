@@ -1,0 +1,9 @@
+<div class="layout layout--col layout--center gap--small">
+  <div class="flex flex--row flex--center-y gap--small">
+    <div class="w--16 h--16 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
+    <span class="value value--large value--tnums">{{ cur.temperature_2m | round }}°</span>
+  </div>
+  <span class="description"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} m/s</span>
+  <span class="description">I morgon {{ daily.temperature_2m_max[1] | round }}°/{{ daily.temperature_2m_min[1] | round }}° · {% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm snö{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm{% endif %}</span>
+</div>
+<div class="title_bar"><span class="title">Väder</span></div>

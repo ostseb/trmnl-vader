@@ -1,0 +1,68 @@
+{%- assign tom_date = daily.time[1] -%}
+{%- assign wd = tom_date | date: "%w" | plus: 0 -%}
+{%- assign sv_days = "söndag,måndag,tisdag,onsdag,torsdag,fredag,lördag" | split: "," -%}
+<div class="layout layout--col gap--medium">
+  <div class="grid grid--cols-2 gap--large w--full">
+    <div class="flex flex--row flex--center-y gap--medium">
+      <div class="w--32 h--32 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
+      <div class="flex flex--col flex--left gap--xsmall">
+        <span class="label">Nu</span>
+        <span class="value value--xlarge value--tnums">{{ cur.temperature_2m | round }}°</span>
+        <span class="description" data-wmo-text="{{ cur.weather_code }}"></span>
+        <span class="description">Känns som {{ cur.apparent_temperature | round }}°</span>
+      </div>
+    </div>
+    <div class="flex flex--row flex--center-y gap--medium">
+      <div class="w--28 h--28 shrink-0" data-wmo="{{ daily.weather_code[1] }}" data-day="1"></div>
+      <div class="flex flex--col flex--left gap--xsmall">
+        <span class="label">I morgon {{ sv_days[wd] }}</span>
+        <span class="value value--large value--tnums">{{ daily.temperature_2m_max[1] | round }}° <span class="title">/ {{ daily.temperature_2m_min[1] | round }}°</span></span>
+        <span class="description" data-wmo-text="{{ daily.weather_code[1] }}"></span>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid--cols-2 gap--large w--full">
+    <div class="grid grid--cols-2 gap--small">
+      <div class="item"><div class="content">
+        <span class="label label--small">Vind</span>
+        <span class="title"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} m/s</span>
+        <span class="description">byar {{ cur.wind_gusts_10m | round }} m/s</span>
+      </div></div>
+      <div class="item"><div class="content">
+        <span class="label label--small">Nederbörd 12 h</span>
+        <span class="title">{{ rain12 | round: 1 }} mm</span>
+        <span class="description">{% if snow12 > 0 %}varav snö {{ snow12 | round: 1 }} cm{% elsif rain12 == 0 %}uppehåll{% else %}regn{% endif %}</span>
+      </div></div>
+    </div>
+    <div class="grid grid--cols-2 gap--small">
+      <div class="item"><div class="content">
+        <span class="label label--small">Vind i morgon</span>
+        <span class="title"><span data-wind-dir="{{ daily.wind_direction_10m_dominant[1] }}"></span> {{ daily.wind_speed_10m_max[1] | round }} m/s</span>
+        <span class="description">byar {{ daily.wind_gusts_10m_max[1] | round }} m/s</span>
+      </div></div>
+      <div class="item"><div class="content">
+        <span class="label label--small">{% if daily.snowfall_sum[1] > 0 %}Snö i morgon{% else %}Regn i morgon{% endif %}</span>
+        <span class="title">{% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm{% endif %}</span>
+        <span class="description">risk {{ daily.precipitation_probability_max[1] }} %</span>
+      </div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid grid--cols-8 gap--small w--full">
+    {%- for k in (1..8) -%}
+      {%- assign i = k | times: 3 | plus: h0 -%}
+      {%- if hourly.time[i] -%}
+      <div class="flex flex--col flex--center-x">
+        <span class="label label--small">{{ hourly.time[i] | slice: 11, 2 }}</span>
+        <div class="w--10 h--10" data-wmo="{{ hourly.weather_code[i] }}" data-day="{{ hourly.is_day[i] }}"></div>
+        <span class="title title--small">{{ hourly.temperature_2m[i] | round }}°</span>
+        <span class="description">{% if hourly.precipitation[i] > 0 %}{{ hourly.precipitation[i] | round: 1 }} mm{% else %}&nbsp;{% endif %}</span>
+      </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+<div class="title_bar">
+  <span class="title">Väder</span>
+  <span class="instance">{% if cf.place != blank %}{{ cf.place }} · {% endif %}uppdaterat {{ cur.time | slice: 11, 5 }}</span>
+</div>

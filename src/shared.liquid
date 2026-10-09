@@ -1,0 +1,57 @@
+{%- assign cf = trmnl.plugin_settings.custom_fields_values -%}
+{%- assign cur = current -%}
+{%- comment -%} Index of the current hour in the hourly arrays (times are local ISO strings). {%- endcomment -%}
+{%- assign now_hour = current.time | slice: 0, 13 -%}
+{%- assign h0 = 0 -%}
+{%- for t in hourly.time -%}{%- assign th = t | slice: 0, 13 -%}{%- if th == now_hour -%}{%- assign h0 = forloop.index0 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+{%- comment -%} Precipitation / snowfall over the next 12 hours. {%- endcomment -%}
+{%- assign rain12 = 0 -%}{%- assign snow12 = 0 -%}
+{%- assign h_end = h0 | plus: 11 -%}
+{%- for i in (h0..h_end) -%}
+  {%- assign rain12 = rain12 | plus: hourly.precipitation[i] -%}
+  {%- assign snow12 = snow12 | plus: hourly.snowfall[i] -%}
+{%- endfor -%}
+<script>
+  // WMO weather code -> Swedish text + icon. Icons are simple 1-bit friendly SVG strokes.
+  window.WX = (function () {
+    const T = {0:"Klart",1:"Mestadels klart",2:"Halvklart",3:"Mulet",45:"Dimma",48:"Rimfrostdimma",
+      51:"Lätt duggregn",53:"Duggregn",55:"Kraftigt duggregn",56:"Underkylt duggregn",57:"Underkylt duggregn",
+      61:"Lätt regn",63:"Regn",65:"Kraftigt regn",66:"Underkylt regn",67:"Underkylt regn",
+      71:"Lätt snöfall",73:"Snöfall",75:"Kraftigt snöfall",77:"Snökorn",80:"Regnskurar",81:"Regnskurar",82:"Kraftiga skurar",
+      85:"Snöbyar",86:"Kraftiga snöbyar",95:"Åska",96:"Åska med hagel",99:"Åska med hagel"};
+    const sw = 'fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"';
+    const cloud = (dy = 0) => `<path ${sw} d="M18 ${44 + dy} h30 a10 10 0 0 0 0 -20 a14 14 0 0 0 -27 -3 a9 9 0 0 0 -3 23 z" fill="white"/>`;
+    const sun = (cx = 32, cy = 32, r = 11) => {
+      let s = `<circle ${sw} cx="${cx}" cy="${cy}" r="${r}"/>`;
+      for (let a = 0; a < 360; a += 45) {
+        const rad = a * Math.PI / 180, x1 = cx + Math.cos(rad) * (r + 6), y1 = cy + Math.sin(rad) * (r + 6), x2 = cx + Math.cos(rad) * (r + 12), y2 = cy + Math.sin(rad) * (r + 12);
+        s += `<line ${sw} x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+      }
+      return s;
+    };
+    const moon = (cx = 32, cy = 30) => `<path ${sw} d="M${cx + 8} ${cy - 16} a16 16 0 1 0 10 24 a13 13 0 0 1 -10 -24 z"/>`;
+    const drops = n => [16, 28, 40, 52].slice(0, n).map(x => `<line ${sw} x1="${x}" y1="50" x2="${x - 4}" y2="60"/>`).join("");
+    const flakes = n => [18, 32, 46].slice(0, n).map(x => `<g ${sw}><line x1="${x}" y1="50" x2="${x}" y2="60"/><line x1="${x - 5}" y1="55" x2="${x + 5}" y2="55"/></g>`).join("");
+    const icon = (code, day) => {
+      let b;
+      if (code === 0) b = day ? sun() : moon();
+      else if (code <= 2) b = (day ? `<g transform="translate(-8 -8) scale(.8)">${sun()}</g>` : `<g transform="translate(-6 -8) scale(.8)">${moon()}</g>`) + cloud(6);
+      else if (code === 3) b = cloud(0);
+      else if (code === 45 || code === 48) b = [24, 34, 44].map((y, i) => `<line ${sw} x1="${10 + i * 4}" y1="${y}" x2="${54 - i * 4}" y2="${y}"/>`).join("");
+      else if (code >= 71 && code <= 77 || code === 85 || code === 86) b = cloud(-6) + flakes(code === 71 || code === 85 ? 2 : 3);
+      else if (code === 56 || code === 57 || code === 66 || code === 67) b = cloud(-6) + drops(2) + flakes(1).replace(/x1="18"/g, 'x1="46"');
+      else if (code >= 95) b = cloud(-6) + `<path ${sw} d="M34 44 l-6 10 h8 l-6 10"/>`;
+      else b = cloud(-6) + drops(code === 51 || code === 61 || code === 80 ? 2 : code >= 65 || code === 82 ? 4 : 3);
+      return `<svg viewBox="0 0 64 64" width="100%" height="100%">${b}</svg>`;
+    };
+    const compass = deg => ["N", "NO", "O", "SO", "S", "SV", "V", "NV"][Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+    // Arrow points where the wind blows TO (meteorological direction is where it comes FROM).
+    const arrow = deg => `<svg viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align:-0.12em;transform:rotate(${deg + 180}deg)"><path d="M12 2 L19 20 L12 15 L5 20 Z" fill="black"/></svg>`;
+    return { text: c => T[c] || "", icon, compass, arrow };
+  })();
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-wmo]").forEach(el => { el.innerHTML = WX.icon(+el.dataset.wmo, el.dataset.day !== "0"); });
+    document.querySelectorAll("[data-wmo-text]").forEach(el => { el.textContent = WX.text(+el.dataset.wmoText); });
+    document.querySelectorAll("[data-wind-dir]").forEach(el => { const d = +el.dataset.windDir; el.innerHTML = WX.arrow(d) + " " + WX.compass(d); });
+  });
+</script>

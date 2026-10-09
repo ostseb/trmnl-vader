@@ -1,0 +1,37 @@
+---
+name: Väder – nu och i morgon
+description: Temperatur, vind, regn och snö
+strategy: polling
+refresh_interval: 60
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: 'https://api.open-meteo.com/v1/forecast?latitude={{ location | split: "," | first | strip }}&longitude={{ location | split: "," | last | strip }}&timezone=Europe%2FStockholm&wind_speed_unit=ms&forecast_days=3&current=temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,snowfall&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset&hourly=temperature_2m,precipitation,snowfall,weather_code,is_day'
+polling_headers: ''
+polling_body: ''
+custom_fields:
+- keyname: about_vader
+  field_type: author_bio
+  name: Om pluginen
+  category: environment,nature
+  learn_more_url: https://open-meteo.com
+  description: |-
+    Ett lugnt väderkort på svenska för din TRMNL som visar vädret just nu och i morgon, med det som faktiskt spelar roll i Sverige: temperatur, hur det känns, vindstyrka i meter per sekund med byar och riktning, samt regn och snö.
+
+    På helskärm visar den nuvarande temperatur och väder med en tydlig symbol, känns-som-temperatur, vind och byar, nederbörden de kommande tolv timmarna (med snö i centimeter när det snöar) och morgondagens högsta och lägsta temperatur, vind och nederbördsrisk. Längst ned finns en remsa med vädret var tredje timme det kommande dygnet. Symbolerna är enkla linjeteckningar som syns skarpt på e-papper.
+
+    Ange plats genom att söka på ort eller adress. Prognosen kommer från Open-Meteo, som kombinerar flera nordiska vädermodeller och inte kräver någon API-nyckel. Fungerar i alla fyra layouter och i mashups.
+
+    Väderdata från <a href="https://open-meteo.com" class="underline">Open-Meteo</a> (CC BY 4.0).
+- keyname: location
+  field_type: lat_lon
+  name: Plats
+  description: Sök på ort, adress eller postnummer.
+  default: 59.3293,18.0686
+- keyname: place
+  field_type: string
+  name: Platsnamn
+  description: Visas i titelraden, t.ex. Hemma eller Kalmar.
+  placeholder: Hemma
+  optional: true
