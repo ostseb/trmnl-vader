@@ -13,6 +13,7 @@ polling_body: ''
 custom_fields:
 - keyname: about_vader
   field_type: author_bio
+  github_url: https://github.com/ostseb/trmnl-vader
   name: Om pluginen
   category: environment,nature
   learn_more_url: https://open-meteo.com
