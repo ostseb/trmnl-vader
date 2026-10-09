@@ -1,4 +1,5 @@
 ---
+id: 501164
 name: Väder – nu och i morgon
 description: Temperatur, vind, regn och snö
 strategy: polling

@@ -1,22 +1,22 @@
 <div class="layout layout--col gap--medium">
   <div class="flex flex--row flex--center-y gap--medium">
-    <div class="w--20 h--20 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
+    <div class="w--24 h--24 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
     <div class="flex flex--col">
-      <span class="label label--small">Nu</span>
-      <span class="value value--large value--tnums">{{ cur.temperature_2m | round }}°</span>
+      <span class="value value--xsmall">Nu</span>
+      <span class="value value--xlarge value--tnums">{{ cur.temperature_2m | round }}°</span>
     </div>
   </div>
-  <span class="description" data-wmo-text="{{ cur.weather_code }}"></span>
-  <span class="title title--small"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} m/s, byar {{ cur.wind_gusts_10m | round }}</span>
+  <span class="value value--xsmall" data-wmo-text="{{ cur.weather_code }}"></span>
+  <span class="value value--xsmall"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} m/s, byar {{ cur.wind_gusts_10m | round }}</span>
   <div class="divider"></div>
   <div class="flex flex--row flex--center-y gap--medium">
-    <div class="w--16 h--16 shrink-0" data-wmo="{{ daily.weather_code[1] }}" data-day="1"></div>
+    <div class="w--20 h--20 shrink-0" data-wmo="{{ daily.weather_code[1] }}" data-day="1"></div>
     <div class="flex flex--col">
-      <span class="label label--small">I morgon</span>
-      <span class="value value--small value--tnums">{{ daily.temperature_2m_max[1] | round }}° / {{ daily.temperature_2m_min[1] | round }}°</span>
+      <span class="value value--xsmall">I morgon</span>
+      <span class="value value--tnums">{{ daily.temperature_2m_max[1] | round }}° / {{ daily.temperature_2m_min[1] | round }}°</span>
     </div>
   </div>
-  <span class="description" data-wmo-text="{{ daily.weather_code[1] }}"></span>
-  <span class="title title--small">{% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm snö{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm regn{% endif %} · {{ daily.wind_speed_10m_max[1] | round }} ({{ daily.wind_gusts_10m_max[1] | round }}) m/s</span>
+  <span class="value value--xsmall" data-wmo-text="{{ daily.weather_code[1] }}"></span>
+  <span class="value value--xxsmall text--center">{% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm snö{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm regn{% endif %} · {{ daily.wind_speed_10m_max[1] | round }} ({{ daily.wind_gusts_10m_max[1] | round }}) m/s</span>
 </div>
 <div class="title_bar"><span class="title">Väder</span></div>

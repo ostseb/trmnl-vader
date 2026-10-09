@@ -1,17 +1,17 @@
 <div class="layout layout--row gap--large">
   <div class="flex flex--row flex--center-y gap--medium grow">
-    <div class="w--20 h--20 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
+    <div class="w--24 h--24 shrink-0" data-wmo="{{ cur.weather_code }}" data-day="{{ cur.is_day }}"></div>
     <div class="flex flex--col">
-      <span class="value value--large value--tnums">{{ cur.temperature_2m | round }}°</span>
-      <span class="description"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} ({{ cur.wind_gusts_10m | round }}) m/s</span>
+      <span class="value value--xlarge value--tnums">{{ cur.temperature_2m | round }}°</span>
+      <span class="value value--xsmall"><span data-wind-dir="{{ cur.wind_direction_10m }}"></span> {{ cur.wind_speed_10m | round }} ({{ cur.wind_gusts_10m | round }}) m/s</span>
     </div>
   </div>
   <div class="flex flex--row flex--center-y gap--medium grow">
-    <div class="w--16 h--16 shrink-0" data-wmo="{{ daily.weather_code[1] }}" data-day="1"></div>
+    <div class="w--20 h--20 shrink-0" data-wmo="{{ daily.weather_code[1] }}" data-day="1"></div>
     <div class="flex flex--col">
-      <span class="label label--small">I morgon</span>
-      <span class="value value--small value--tnums">{{ daily.temperature_2m_max[1] | round }}° / {{ daily.temperature_2m_min[1] | round }}°</span>
-      <span class="description">{% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm snö{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm{% endif %} · {{ daily.wind_speed_10m_max[1] | round }} m/s</span>
+      <span class="value value--xsmall">I morgon</span>
+      <span class="value value--tnums">{{ daily.temperature_2m_max[1] | round }}° / {{ daily.temperature_2m_min[1] | round }}°</span>
+      <span class="value value--xxsmall">{% if daily.snowfall_sum[1] > 0 %}{{ daily.snowfall_sum[1] | round: 1 }} cm snö{% else %}{{ daily.precipitation_sum[1] | round: 1 }} mm{% endif %} · {{ daily.wind_speed_10m_max[1] | round }} m/s</span>
     </div>
   </div>
 </div>
