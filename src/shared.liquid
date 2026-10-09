@@ -46,7 +46,7 @@
     };
     const compass = deg => ["N", "NO", "O", "SO", "S", "SV", "V", "NV"][Math.round(((deg % 360) + 360) % 360 / 45) % 8];
     // Arrow points where the wind blows TO (meteorological direction is where it comes FROM).
-    const arrow = deg => `<svg viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align:-0.12em;transform:rotate(${deg + 180}deg)"><path d="M12 2 L19 20 L12 15 L5 20 Z" fill="black"/></svg>`;
+    const arrow = deg => `<svg viewBox="0 0 24 24" width="1em" height="1em" class="inline-block"><path transform="rotate(${deg + 180} 12 12)" d="M12 2 L19 20 L12 15 L5 20 Z" fill="black"/></svg>`;
     return { text: c => T[c] || "", icon, compass, arrow };
   })();
   document.addEventListener("DOMContentLoaded", function () {
